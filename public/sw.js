@@ -133,14 +133,9 @@ self.addEventListener('sync', e => {
 
 // Escuchar PUSH
 self.addEventListener('push', e => {
-
     // console.log(e);
-
     const data = JSON.parse( e.data.text() );
-
     // console.log(data);
-
-
     const title = data.titulo;
     const options = {
         body: data.cuerpo,

@@ -3,11 +3,10 @@ const fs = require('fs');
 
 const urlsafeBase64 = require('urlsafe-base64');
 const vapid = require('./vapid.json');
-
 const webpush = require('web-push');
 
 webpush.setVapidDetails(
-    'mailto:jolugama8@gmail.com',
+    'mailto:example@yourdomain.org',
     vapid.publicKey,
     vapid.privateKey
   );
@@ -16,6 +15,7 @@ let suscripciones = require('./subs-db.json');
 
 module.exports.getKey = () => {
     return urlsafeBase64.decode( vapid.publicKey );
+    // return vapid.publicKey;
 };
 
 module.exports.addSubscription = ( suscripcion ) => {
@@ -31,7 +31,8 @@ module.exports.sendPush = ( post ) => {
             .then( console.log( 'Notificacion enviada ') )
             .catch( err => {
                 console.log('Notificación falló');
-                if ( err.statusCode === 410 ) { // GONE, ya no existe
+                console.log('se prepara para borrar', err.statusCode);
+                if ( err.statusCode === 410 || err.statusCode === 403 ) { // GONE, ya no existe
                     suscripciones[i].borrar = true;
                 }
             });

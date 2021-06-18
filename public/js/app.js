@@ -6,20 +6,17 @@ var swReg;
 if (navigator.serviceWorker) {
 
 
-    if (url.includes('localhost')) {
+    if ((url.includes('localhost')) || (url.includes('127.0.0.1'))  ) {
         swLocation = '/sw.js';
     }
 
 
     window.addEventListener('load',() => {
         navigator.serviceWorker.register(swLocation).then( (reg) =>{
-            swReg = reg;
+            swReg = reg; // serviceWorkerRegistration
             swReg.pushManager.getSubscription().then(verificaSuscripcion);
-
         });
-
     });
-
 }
 
 
@@ -274,17 +271,14 @@ function notificarme() {
 
 // Get Key
 function getPublicKey() {
-
     // fetch('api/key')
     //     .then( res => res.text())
     //     .then( console.log );
 
     return fetch('api/key')
         .then(res => res.arrayBuffer())
-        // returnar arreglo, pero como un Uint8array
+        // retornar array, como un Uint8array
         .then(key => new Uint8Array(key));
-
-
 }
 
 
