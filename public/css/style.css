@@ -23,6 +23,7 @@
 /* Personalizados */
 button {
   width: 80%;
+  max-width: 250px;
   border-radius: 5px;
   border: none;
   padding: 5px;
@@ -31,7 +32,7 @@ button {
 }
 
 .btn-noti-activadas {
-  background-color: #3498db;
+  background-color: #058d27;
 }
 
 .btn-noti-desactivadas {
@@ -48,6 +49,7 @@ button {
   margin-top: 6em;
   display: block;
   margin-bottom: 6em;
+  text-align: center;
 }
 
 .seleccion div {

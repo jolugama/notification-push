@@ -1,28 +1,24 @@
-# Notas:
+# Ejemplo push notification para las PWA
 
-Este es un pequeño servidor de express listo para ejecutarse y servir la carpeta public en la web.
+Servidor express que sirve la carpeta public en la web. 
 
-Recuerden que deben de reconstruir los módulos de node con el comando
-
-
-
+## instalar packages necesarios
 
 ```
 npm install
 ```
 
-Luego, para correr en producción
-```
-npm start
-```
+## Ejecutar  servidor modo desarrollo
 
-si falla start o start2 --->
-
-echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-
-
-Para correr en desarrollo
 ```
 npm run dev
 ```
+
+Si falla:
+```
+echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+
+Ejecuta el archivo server.js.
+
+
