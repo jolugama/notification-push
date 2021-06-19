@@ -11,13 +11,12 @@ const mensajes = [
   {
     _id: 'XXX',
     user: 'spiderman',
-    mensaje: 'Hola Mundo'
+    mensaje: 'Hola Mundo 2'
   }
 ];
 
-// Get mensajes
+// Get mensaje
 router.get('/', function (req, res) {
-  // res.json('Obteniendo mensajes');
   console.log('get /');
   res.json( mensajes );
 });

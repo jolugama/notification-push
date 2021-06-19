@@ -1,14 +1,16 @@
 var url = window.location.href;
-var swLocation = '/twittor/sw.js';
+var swLocation = '/twittor/sw.js';  //localización en producción. poner la direccion de github
+// en modo desarrollo
+if ((url.includes('localhost')) || (url.includes('127.0.0.1'))  ) {
+    swLocation = '/sw.js';
+}
 
 var swReg;
 
 if (navigator.serviceWorker) {
 
 
-    if ((url.includes('localhost')) || (url.includes('127.0.0.1'))  ) {
-        swLocation = '/sw.js';
-    }
+   
 
 
     window.addEventListener('load',() => {
@@ -179,7 +181,7 @@ function getMensajes() {
     fetch('api')
         .then(res => res.json())
         .then(posts => {
-            console.log(posts);
+            console.log('getMensajes',posts);
             posts.forEach(post =>
                 crearMensajeHTML(post.mensaje, post.user));
         });
@@ -193,17 +195,13 @@ getMensajes();
 
 // Detectar cambios de conexión
 function isOnline() {
-
     if (navigator.onLine) {
         // tenemos conexión
-        // console.log('online');
         $.mdtoast('Online', {
             interaction: true,
             interactionTimeout: 1000,
             actionText: 'OK!'
         });
-
-
     } else {
         // No tenemos conexión
         $.mdtoast('Offline', {
@@ -212,7 +210,6 @@ function isOnline() {
             type: 'warning'
         });
     }
-
 }
 
 window.addEventListener('online', isOnline);
@@ -234,39 +231,42 @@ function verificaSuscripcion(activadas) {
 
 
 
-function enviarNotificacion() {
+function enviarNotificacion(titulo, cuerpo) {
     const notificationOpts = {
-        body: 'Este es el cuerpo de la notificación',
+        body: cuerpo,
         icon: 'img/icons/icon-72x72.png'
     };
-    const n = new Notification('Hola Mundo', notificationOpts);
+    const n = new Notification(titulo, notificationOpts);
     n.onclick = () => {
         console.log('Click');
     };
 
 }
 
-
-function notificarme() {
+/**
+ * envia notificación push desde el lado del cliente
+ * @returns 
+ */
+function notifyMe(titulo,cuerpo) {
     if (!window.Notification) {
         console.log('Este navegador no soporta notificaciones');
         return;
     }
     if (Notification.permission === 'granted') {
         // new Notification('Hola Mundo! - granted');
-        enviarNotificacion();
+        enviarNotificacion(titulo,cuerpo);
     } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
         Notification.requestPermission(function (permission) {
             console.log(permission);
             if (permission === 'granted') {
                 // new Notification('Hola Mundo! - pregunta');
-                enviarNotificacion();
+                enviarNotificacion(titulo,cuerpo);
             }
         });
     }
 }
 
-// notificarme();
+// notifyMe("holi","que tal?");
 
 
 // Get Key
