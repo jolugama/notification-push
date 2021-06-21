@@ -25,7 +25,7 @@ if (navigator.serviceWorker) {
 
 
 // Detectar cambios de conexión
-function isOnline() {
+let isOnline=()=> {
     if (navigator.onLine) {
         // tenemos conexión
         $.mdtoast('Online', {
@@ -50,7 +50,7 @@ isOnline();
 
 
 // Notificaciones
-function verificaSuscripcion(activadas) {
+let verificaSuscripcion=(activadas)=> {
     if (activadas) {
         notificacionesActivadas = true;
         console.log('notificaciones activadas');
@@ -62,21 +62,10 @@ function verificaSuscripcion(activadas) {
 
 
 
-let enviarNotificacion=(titulo, cuerpo) => {
-    const notificationOpts = {
-        body: cuerpo,
-        icon: 'img/icons/icon-72x72.png'
-    };
-    const n = new Notification(titulo, notificationOpts);
-    n.onclick = () => {
-        console.log('Click');
-    };
-}
-
 
 
 // si pasa por una posición de scroll, compruebo y muestro mensaje aceptación notificación push
-$(window).scroll(function (event) {
+$(window).scroll( (event)=> {
     var scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
     // MOSTRAR MENSAJE SI:
     // scroll es mayor a 80%, el usuario expresamente no lo ha denegado previamente, 
@@ -94,8 +83,6 @@ $(window).scroll(function (event) {
         })
     }
 });
-
-
 
 
 
@@ -140,7 +127,7 @@ let showMessageNotification = () => {
 // PRIVADAS
 
 // Get Key
-let _getPublicKey=()=> {
+let _getPublicKey = () => {
     return fetch('api/key')
         .then(res => res.arrayBuffer())
         // retornar array, como un Uint8array
@@ -150,14 +137,26 @@ let _getPublicKey=()=> {
 
 
 
+
+
 // SIN IMPORTANCIA, sin usar
 
-
 // cancela la subscripción. 
-function cancelarSuscripcion() {
+let cancelarSuscripcion = () => {
     swReg.pushManager.getSubscription().then(subs => {
         subs.unsubscribe().then(() => verificaSuscripcion(false));
     });
+}
+
+let _enviarNotificacion = (titulo, cuerpo) => {
+    const notificationOpts = {
+        body: cuerpo,
+        icon: 'img/icons/icon-72x72.png'
+    };
+    const n = new Notification(titulo, notificationOpts);
+    n.onclick = () => {
+        console.log('Click');
+    };
 }
 
 
@@ -165,20 +164,20 @@ function cancelarSuscripcion() {
  * envia una notificación desde el usuario, sin el lado del servidor.
  * @returns 
  */
- function notifyMe(titulo, cuerpo) {
+let notifyMe = (titulo, cuerpo) => {
     if (!window.Notification) {
         console.log('Este navegador no soporta notificaciones');
         return;
     }
     if (Notification.permission === 'granted') {
         // new Notification('Hola Mundo! - granted');
-        enviarNotificacion(titulo, cuerpo);
+        _enviarNotificacion(titulo, cuerpo);
     } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
         Notification.requestPermission(function (permission) {
             console.log(permission);
             if (permission === 'granted') {
                 // new Notification('Hola Mundo! - pregunta');
-                enviarNotificacion(titulo, cuerpo);
+                _enviarNotificacion(titulo, cuerpo);
             }
         });
     }
