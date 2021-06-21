@@ -83,7 +83,9 @@ let app = (() => {
     }
 
     let setMessageDisplayed = (_messageDisplayed) => {
-        this.messageDisplayed = _messageDisplayed;
+        console.log(this.messageDisplayed);
+        messageDisplayed = _messageDisplayed;
+        console.log(this.messageDisplayed);
     }
 
     let getNotificacionesActivadas = () => {
