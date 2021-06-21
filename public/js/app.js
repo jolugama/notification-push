@@ -16,7 +16,7 @@ let app = (() => {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register(swLocation).then((reg) => {
                 swReg = reg; // serviceWorkerRegistration
-                swReg.pushManager.getSubscription().then(verificaSuscripcion);
+                swReg.pushManager.getSubscription().then(_verificaSuscripcion);
             });
         });
     }
@@ -41,9 +41,8 @@ let app = (() => {
         }
     }
 
-
     // Notificaciones
-    let verificaSuscripcion = (activadas) => {
+    let _verificaSuscripcion = (activadas) => {
         if (activadas) {
             notificacionesActivadas = true;
             console.log('notificaciones activadas');
@@ -55,27 +54,6 @@ let app = (() => {
 
 
 
-
-
-    // si pasa por una posición de scroll, compruebo y muestro mensaje aceptación notificación push
-    $(window).scroll((event) => {
-        var scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
-        // MOSTRAR MENSAJE SI:
-        // scroll es mayor a 80%, el usuario expresamente no lo ha denegado previamente, 
-        // pregunto al sw, si las notificaciones no están aún activadas
-        if (!messageDisplayed && scrollPercent > 80 && Notification.permission !== 'denied' && notificacionesActivadas === false) {
-            messageDisplayed = true;
-            console.log('se muestra mensaje para que acepte notificaciones');
-            showMessageNotification();
-        } else if (!messageDisplayed && scrollPercent > 80 && Notification.permission === 'denied') {
-            messageDisplayed = true;
-            Swal.fire({
-                title: 'Notificaciones denegadas',
-                html: `Es una pena que tengas las notificaciones bloqueadas, 
-            si las aceptases te avisaríamos de las mejores <b>ofertas</b> `
-            })
-        }
-    });
 
 
 
@@ -106,13 +84,25 @@ let app = (() => {
                                     },
                                     body: JSON.stringify(suscripcion)
                                 })
-                                .then(verificaSuscripcion)
+                                .then(_verificaSuscripcion)
                                 .then(Swal.fire('Notificaciones activadas, gracias.', '', 'success'))
                                 .catch(cancelarSuscripcion);
                         });
                 });
             }
         })
+    }
+
+    let getMessageDisplayed=()=>{
+        return messageDisplayed;
+    }
+
+    let setMessageDisplayed=(_messageDisplayed)=>{
+        this.messageDisplayed=_messageDisplayed;
+    }
+
+    let getNotificacionesActivadas=()=>{
+        return notificacionesActivadas;
     }
 
 
@@ -128,14 +118,42 @@ let app = (() => {
     // FIN PRIVADAS
 
     return {
-        isOnline:isOnline
+        isOnline: isOnline,
+        showMessageNotification: showMessageNotification,
+        getMessageDisplayed:getMessageDisplayed,
+        getNotificacionesActivadas:getNotificacionesActivadas,
+        setMessageDisplayed:setMessageDisplayed
     }
+
+
 })();
 
 
 window.addEventListener('online', app.isOnline);
 window.addEventListener('offline', app.isOnline);
 app.isOnline();
+
+
+// si pasa por una posición de scroll, compruebo y muestro mensaje aceptación notificación push
+$(window).scroll((event) => {
+    let scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
+    // MOSTRAR MENSAJE SI:
+    // scroll es mayor a 80%, el usuario expresamente no lo ha denegado previamente, 
+    // pregunto al sw, si las notificaciones no están aún activadas
+    if (!app.getMessageDisplayed() && scrollPercent > 80 && Notification.permission !== 'denied' && app.getNotificacionesActivadas() === false) {
+        app.setMessageDisplayed(true);
+        console.log('se muestra mensaje para que acepte notificaciones');
+        app.showMessageNotification();
+    } else if (!app.getMessageDisplayed() && scrollPercent > 80 && Notification.permission === 'denied') {
+        app.setMessageDisplayed(true);
+        Swal.fire({
+            title: 'Notificaciones denegadas',
+            html: `Es una pena que tengas las notificaciones bloqueadas, 
+            si las aceptases te avisaríamos de las mejores <b>ofertas</b> `
+        })
+    }
+});
+
 
 
 
@@ -146,7 +164,7 @@ app.isOnline();
 // cancela la subscripción. 
 let cancelarSuscripcion = () => {
     swReg.pushManager.getSubscription().then(subs => {
-        subs.unsubscribe().then(() => verificaSuscripcion(false));
+        subs.unsubscribe().then(() => _verificaSuscripcion(false));
     });
 }
 
