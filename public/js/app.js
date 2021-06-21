@@ -22,10 +22,6 @@ let app = (() => {
     }
 
 
-
-
-
-
     // Detectar cambios de conexión
     let isOnline = () => {
         if (navigator.onLine) {
@@ -44,11 +40,6 @@ let app = (() => {
             });
         }
     }
-    window.addEventListener('online', isOnline);
-    window.addEventListener('offline', isOnline);
-    isOnline();
-
-
 
 
     // Notificaciones
@@ -125,7 +116,6 @@ let app = (() => {
     }
 
 
-
     // PRIVADAS
 
     // Get Key
@@ -136,10 +126,16 @@ let app = (() => {
             .then(key => new Uint8Array(key));
     }
     // FIN PRIVADAS
+
+    return {
+        isOnline:isOnline
+    }
 })();
 
 
-
+window.addEventListener('online', app.isOnline);
+window.addEventListener('offline', app.isOnline);
+app.isOnline();
 
 
 
