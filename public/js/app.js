@@ -1,5 +1,6 @@
-var url = window.location.href;
-var swLocation = '/twittor/sw.js'; //localización en producción. poner la direccion de github
+const url = window.location.href;
+let messageDisplayed = false;
+let swLocation = '/twittor/sw.js'; //localización en producción. poner la direccion de github
 // en modo desarrollo
 if ((url.includes('localhost')) || (url.includes('127.0.0.1'))) {
     swLocation = '/sw.js';
@@ -17,54 +18,8 @@ if (navigator.serviceWorker) {
     });
 }
 
-
-
-
-
-
 // ===== Codigo de la aplicación
 
-
-
-
-
-
-
-// Boton de salir
-salirBtn.on('click', function () {
-
-    logIn(false);
-
-});
-
-// Boton de nuevo mensaje
-nuevoBtn.on('click', function () {
-
-    modal.removeClass('oculto');
-    modal.animate({
-        marginTop: '-=1000px',
-        opacity: 1
-    }, 200);
-
-});
-
-
-
-
-
-
-
-
-// Obtener mensajes del servidor
-function getMensajes() {
-    fetch('api')
-        .then(res => res.json())
-        .then(posts => {
-            console.log('getMensajes', posts);
-        });
-}
-
-getMensajes();
 
 
 
@@ -158,28 +113,16 @@ function getPublicKey() {
 
 
 
-
-// btnDesactivadas.on('click', () => {
-
-// });
-
-
-
+// cancela la subscripción. 
 function cancelarSuscripcion() {
     swReg.pushManager.getSubscription().then(subs => {
         subs.unsubscribe().then(() => verificaSuscripcion(false));
     });
 }
 
-btnActivadas.on('click', function () {
-    cancelarSuscripcion();
-});
 
 
 
-
-
-messageDisplayed = false;
 $(window).scroll(function (event) {
     var scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
     // MOSTRAR MENSAJE SI:
@@ -187,13 +130,20 @@ $(window).scroll(function (event) {
     // pregunto al sw, si las notificaciones no están aún activadas
     if (!messageDisplayed && scrollPercent > 80 && Notification.permission !== 'denied' && notificacionesActivadas === false) {
         messageDisplayed = true;
-        console.log('se muestra mensaje');
-        showMessage();
+        console.log('se muestra mensaje para que acepte notificaciones');
+        showMessageNotification();
+    } else if (!messageDisplayed && scrollPercent > 80 && Notification.permission === 'denied' ) {
+        messageDisplayed = true;
+        Swal.fire({
+            title: 'Notificaciones denegadas',
+            html: `Es una pena que tengas las notificaciones bloqueadas, 
+            si las aceptases te avisaríamos de las mejores <b>ofertas</b> `
+        })
     }
 });
 
 
-let showMessage = () => {
+let showMessageNotification = () => {
     Swal.fire({
         title: 'Estáte actualizado!',
         html: `Si quieres que te informemos de nuevos <b>productos</b>,
@@ -227,5 +177,4 @@ let showMessage = () => {
             });
         }
     })
-
 }
