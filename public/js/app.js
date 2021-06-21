@@ -41,21 +41,6 @@ let app = (() => {
         }
     }
 
-    // Notificaciones
-    let _verificaSuscripcion = (activadas) => {
-        if (activadas) {
-            notificacionesActivadas = true;
-            console.log('notificaciones activadas');
-        } else {
-            notificacionesActivadas = false;
-            console.log('notificaciones desactivadas');
-        }
-    }
-
-
-
-
-
 
     let showMessageNotification = () => {
         Swal.fire({
@@ -86,22 +71,22 @@ let app = (() => {
                                 })
                                 .then(_verificaSuscripcion)
                                 .then(Swal.fire('Notificaciones activadas, gracias.', '', 'success'))
-                                .catch(cancelarSuscripcion);
+                                .catch(_cancelarSuscripcion);
                         });
                 });
             }
         })
     }
 
-    let getMessageDisplayed=()=>{
+    let getMessageDisplayed = () => {
         return messageDisplayed;
     }
 
-    let setMessageDisplayed=(_messageDisplayed)=>{
-        this.messageDisplayed=_messageDisplayed;
+    let setMessageDisplayed = (_messageDisplayed) => {
+        this.messageDisplayed = _messageDisplayed;
     }
 
-    let getNotificacionesActivadas=()=>{
+    let getNotificacionesActivadas = () => {
         return notificacionesActivadas;
     }
 
@@ -115,14 +100,32 @@ let app = (() => {
             // retornar array, como un Uint8array
             .then(key => new Uint8Array(key));
     }
+
+    // cancela la subscripción. 
+    let _cancelarSuscripcion = () => {
+        swReg.pushManager.getSubscription().then(subs => {
+            subs.unsubscribe().then(() => _verificaSuscripcion(false));
+        });
+    }
+
+        // Notificaciones
+        let _verificaSuscripcion = (activadas) => {
+            if (activadas) {
+                notificacionesActivadas = true;
+                console.log('notificaciones activadas');
+            } else {
+                notificacionesActivadas = false;
+                console.log('notificaciones desactivadas');
+            }
+        }
     // FIN PRIVADAS
 
     return {
         isOnline: isOnline,
         showMessageNotification: showMessageNotification,
-        getMessageDisplayed:getMessageDisplayed,
-        getNotificacionesActivadas:getNotificacionesActivadas,
-        setMessageDisplayed:setMessageDisplayed
+        getMessageDisplayed: getMessageDisplayed,
+        getNotificacionesActivadas: getNotificacionesActivadas,
+        setMessageDisplayed: setMessageDisplayed
     }
 
 
@@ -133,6 +136,11 @@ window.addEventListener('online', app.isOnline);
 window.addEventListener('offline', app.isOnline);
 app.isOnline();
 
+
+
+// *****************
+// eventos
+// *****************
 
 // si pasa por una posición de scroll, compruebo y muestro mensaje aceptación notificación push
 $(window).scroll((event) => {
@@ -161,12 +169,7 @@ $(window).scroll((event) => {
 
 // SIN IMPORTANCIA, sin usar
 
-// cancela la subscripción. 
-let cancelarSuscripcion = () => {
-    swReg.pushManager.getSubscription().then(subs => {
-        subs.unsubscribe().then(() => _verificaSuscripcion(false));
-    });
-}
+
 
 let _enviarNotificacion = (titulo, cuerpo) => {
     const notificationOpts = {
