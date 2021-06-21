@@ -22,7 +22,6 @@ if (navigator.serviceWorker) {
 
 
 
-// ===== Codigo de la aplicación
 
 
 // Detectar cambios de conexión
@@ -43,11 +42,11 @@ function isOnline() {
         });
     }
 }
-
 window.addEventListener('online', isOnline);
 window.addEventListener('offline', isOnline);
-
 isOnline();
+
+
 
 
 // Notificaciones
@@ -63,7 +62,7 @@ function verificaSuscripcion(activadas) {
 
 
 
-function enviarNotificacion(titulo, cuerpo) {
+let enviarNotificacion=(titulo, cuerpo) => {
     const notificationOpts = {
         body: cuerpo,
         icon: 'img/icons/icon-72x72.png'
@@ -72,54 +71,6 @@ function enviarNotificacion(titulo, cuerpo) {
     n.onclick = () => {
         console.log('Click');
     };
-
-}
-
-/**
- * envia una notificación desde el usuario, sin el lado del servidor.
- * @returns 
- */
-function notifyMe(titulo, cuerpo) {
-    if (!window.Notification) {
-        console.log('Este navegador no soporta notificaciones');
-        return;
-    }
-    if (Notification.permission === 'granted') {
-        // new Notification('Hola Mundo! - granted');
-        enviarNotificacion(titulo, cuerpo);
-    } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
-        Notification.requestPermission(function (permission) {
-            console.log(permission);
-            if (permission === 'granted') {
-                // new Notification('Hola Mundo! - pregunta');
-                enviarNotificacion(titulo, cuerpo);
-            }
-        });
-    }
-}
-
-// notifyMe("holi","que tal?");
-
-
-// Get Key
-function getPublicKey() {
-    // fetch('api/key')
-    //     .then( res => res.text())
-    //     .then( console.log );
-
-    return fetch('api/key')
-        .then(res => res.arrayBuffer())
-        // retornar array, como un Uint8array
-        .then(key => new Uint8Array(key));
-}
-
-
-
-// cancela la subscripción. 
-function cancelarSuscripcion() {
-    swReg.pushManager.getSubscription().then(subs => {
-        subs.unsubscribe().then(() => verificaSuscripcion(false));
-    });
 }
 
 
@@ -134,7 +85,7 @@ $(window).scroll(function (event) {
         messageDisplayed = true;
         console.log('se muestra mensaje para que acepte notificaciones');
         showMessageNotification();
-    } else if (!messageDisplayed && scrollPercent > 80 && Notification.permission === 'denied' ) {
+    } else if (!messageDisplayed && scrollPercent > 80 && Notification.permission === 'denied') {
         messageDisplayed = true;
         Swal.fire({
             title: 'Notificaciones denegadas',
@@ -143,6 +94,9 @@ $(window).scroll(function (event) {
         })
     }
 });
+
+
+
 
 
 let showMessageNotification = () => {
@@ -157,7 +111,7 @@ let showMessageNotification = () => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             if (!swReg) return console.log('No hay registro de SW');
-            getPublicKey().then(function (key) {
+            _getPublicKey().then(function (key) {
                 swReg.pushManager.subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: key
@@ -180,3 +134,54 @@ let showMessageNotification = () => {
         }
     })
 }
+
+
+
+// PRIVADAS
+
+// Get Key
+let _getPublicKey=()=> {
+    return fetch('api/key')
+        .then(res => res.arrayBuffer())
+        // retornar array, como un Uint8array
+        .then(key => new Uint8Array(key));
+}
+// FIN PRIVADAS
+
+
+
+// SIN IMPORTANCIA, sin usar
+
+
+// cancela la subscripción. 
+function cancelarSuscripcion() {
+    swReg.pushManager.getSubscription().then(subs => {
+        subs.unsubscribe().then(() => verificaSuscripcion(false));
+    });
+}
+
+
+/**
+ * envia una notificación desde el usuario, sin el lado del servidor.
+ * @returns 
+ */
+ function notifyMe(titulo, cuerpo) {
+    if (!window.Notification) {
+        console.log('Este navegador no soporta notificaciones');
+        return;
+    }
+    if (Notification.permission === 'granted') {
+        // new Notification('Hola Mundo! - granted');
+        enviarNotificacion(titulo, cuerpo);
+    } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
+        Notification.requestPermission(function (permission) {
+            console.log(permission);
+            if (permission === 'granted') {
+                // new Notification('Hola Mundo! - pregunta');
+                enviarNotificacion(titulo, cuerpo);
+            }
+        });
+    }
+}
+
+// notifyMe("holi","que tal?");
