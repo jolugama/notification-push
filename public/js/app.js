@@ -6,9 +6,11 @@ if ((url.includes('localhost')) || (url.includes('127.0.0.1'))) {
     swLocation = '/sw.js';
 }
 
-var swReg;
+let swReg;
 let notificacionesActivadas = false;
 
+
+// espera a cargar web, lanza verificación de estado subscripción
 if (navigator.serviceWorker) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register(swLocation).then((reg) => {
@@ -18,9 +20,9 @@ if (navigator.serviceWorker) {
     });
 }
 
+
+
 // ===== Codigo de la aplicación
-
-
 
 
 // Detectar cambios de conexión
@@ -74,7 +76,7 @@ function enviarNotificacion(titulo, cuerpo) {
 }
 
 /**
- * envia notificación push desde el lado del cliente
+ * envia una notificación desde el usuario, sin el lado del servidor.
  * @returns 
  */
 function notifyMe(titulo, cuerpo) {
@@ -122,7 +124,7 @@ function cancelarSuscripcion() {
 
 
 
-
+// si pasa por una posición de scroll, compruebo y muestro mensaje aceptación notificación push
 $(window).scroll(function (event) {
     var scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
     // MOSTRAR MENSAJE SI:

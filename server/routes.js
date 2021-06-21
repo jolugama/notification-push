@@ -7,34 +7,7 @@ const express = require('express');
 const router = express.Router();
 const push = require('./push');
 
-const mensajes = [
-  {
-    _id: 'XXX',
-    user: 'spiderman',
-    mensaje: 'Hola Mundo 2'
-  }
-];
 
-// Get mensaje
-router.get('/', function (req, res) {
-  console.log('get /');
-  res.json( mensajes );
-});
-
-// Post mensaje
-router.post('/', function (req, res) {
-  console.log('post /');
-  const mensaje = {
-    mensaje: req.body.mensaje,
-    user: req.body.user
-  };
-  mensajes.push( mensaje );
-  console.log(mensajes);
-  res.json({
-    ok: true,
-    mensaje
-  });
-});
 
 // Almacenar la suscripción
 router.post('/subscribe', (req, res) => {

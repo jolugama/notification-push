@@ -1,7 +1,5 @@
-// imports
-// importScripts('https://cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js')
 
-importScripts('js/sw-db.js');
+
 importScripts('js/sw-utils.js');
 
 const STATIC_CACHE    = 'static-v2';
@@ -86,17 +84,18 @@ self.addEventListener( 'fetch', e => {
 });
 
 
-// tareas asíncronas
-self.addEventListener('sync', e => {
-    console.log('SW: Sync');
-    if ( e.tag === 'nuevo-post' ) {
-        // postear a BD cuando hay conexión
-        const respuesta = postearMensajes();
-        e.waitUntil( respuesta );
-    }
-});
+// // tareas asíncronas
+// self.addEventListener('sync', e => {
+//     console.log('SW: Sync');
+//     if ( e.tag === 'nuevo-post' ) {
+//         // postear a BD cuando hay conexión
+//         const respuesta = postearMensajes();
+//         e.waitUntil( respuesta );
+//     }
+// });
 
-// Escuchar PUSH
+
+// Escucha notification push desde el servidor
 self.addEventListener('push', e => {
     // console.log(e);
     const data = JSON.parse( e.data.text() );
