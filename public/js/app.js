@@ -1,20 +1,16 @@
 var url = window.location.href;
-var swLocation = '/twittor/sw.js';  //localización en producción. poner la direccion de github
+var swLocation = '/twittor/sw.js'; //localización en producción. poner la direccion de github
 // en modo desarrollo
-if ((url.includes('localhost')) || (url.includes('127.0.0.1'))  ) {
+if ((url.includes('localhost')) || (url.includes('127.0.0.1'))) {
     swLocation = '/sw.js';
 }
 
 var swReg;
+let notificacionesActivadas = false;
 
 if (navigator.serviceWorker) {
-
-
-   
-
-
-    window.addEventListener('load',() => {
-        navigator.serviceWorker.register(swLocation).then( (reg) =>{
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register(swLocation).then((reg) => {
             swReg = reg; // serviceWorkerRegistration
             swReg.pushManager.getSubscription().then(verificaSuscripcion);
         });
@@ -25,90 +21,14 @@ if (navigator.serviceWorker) {
 
 
 
-// Referencias de jQuery
-
-var titulo = $('#titulo');
-var nuevoBtn = $('#nuevo-btn');
-var salirBtn = $('#salir-btn');
-var cancelarBtn = $('#cancel-btn');
-var postBtn = $('#post-btn');
-var avatarSel = $('#seleccion');
-var timeline = $('#timeline');
-
-var modal = $('#modal');
-var modalAvatar = $('#modal-avatar');
-var avatarBtns = $('.seleccion-avatar');
-var txtMensaje = $('#txtMensaje');
-
-var btnActivadas = $('.btn-noti-activadas');
-var btnDesactivadas = $('.btn-noti-desactivadas');
-
-// El usuario, contiene el ID del hÃ©roe seleccionado
-var usuario;
-
-
-
 
 // ===== Codigo de la aplicación
 
-function crearMensajeHTML(mensaje, personaje) {
-
-    var content = `
-    <li class="animated fadeIn fast">
-        <div class="avatar">
-            <img src="img/avatars/${ personaje }.jpg">
-        </div>
-        <div class="bubble-container">
-            <div class="bubble">
-                <h3>@${ personaje }</h3>
-                <br/>
-                ${ mensaje }
-            </div>
-            
-            <div class="arrow"></div>
-        </div>
-    </li>
-    `;
-
-    timeline.prepend(content);
-    cancelarBtn.click();
-
-}
 
 
 
-// Globals
-function logIn(ingreso) {
-
-    if (ingreso) {
-        nuevoBtn.removeClass('oculto');
-        salirBtn.removeClass('oculto');
-        timeline.removeClass('oculto');
-        avatarSel.addClass('oculto');
-        modalAvatar.attr('src', 'img/avatars/' + usuario + '.jpg');
-    } else {
-        nuevoBtn.addClass('oculto');
-        salirBtn.addClass('oculto');
-        timeline.addClass('oculto');
-        avatarSel.removeClass('oculto');
-
-        titulo.text('Seleccione Personaje');
-
-    }
-
-}
 
 
-// Seleccion de personaje
-avatarBtns.on('click', function () {
-
-    usuario = $(this).data('user');
-
-    titulo.text('@' + usuario);
-
-    logIn(true);
-
-});
 
 // Boton de salir
 salirBtn.on('click', function () {
@@ -129,50 +49,9 @@ nuevoBtn.on('click', function () {
 });
 
 
-// Boton de cancelar mensaje
-cancelarBtn.on('click', function () {
-    if (!modal.hasClass('oculto')) {
-        modal.animate({
-            marginTop: '+=1000px',
-            opacity: 0
-        }, 200, function () {
-            modal.addClass('oculto');
-            txtMensaje.val('');
-        });
-    }
-});
-
-// Boton de enviar mensaje
-postBtn.on('click', function () {
-
-    var mensaje = txtMensaje.val();
-    if (mensaje.length === 0) {
-        cancelarBtn.click();
-        return;
-    }
-
-    var data = {
-        mensaje: mensaje,
-        user: usuario
-    };
-
-
-    fetch('api', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(res => console.log('app.js', res))
-        .catch(err => console.log('app.js error:', err));
 
 
 
-    crearMensajeHTML(mensaje, usuario);
-
-});
 
 
 
@@ -181,12 +60,8 @@ function getMensajes() {
     fetch('api')
         .then(res => res.json())
         .then(posts => {
-            console.log('getMensajes',posts);
-            posts.forEach(post =>
-                crearMensajeHTML(post.mensaje, post.user));
+            console.log('getMensajes', posts);
         });
-
-
 }
 
 getMensajes();
@@ -221,11 +96,11 @@ isOnline();
 // Notificaciones
 function verificaSuscripcion(activadas) {
     if (activadas) {
-        btnActivadas.removeClass('oculto');
-        btnDesactivadas.addClass('oculto');
+        notificacionesActivadas = true;
+        console.log('notificaciones activadas');
     } else {
-        btnActivadas.addClass('oculto');
-        btnDesactivadas.removeClass('oculto');
+        notificacionesActivadas = false;
+        console.log('notificaciones desactivadas');
     }
 }
 
@@ -247,20 +122,20 @@ function enviarNotificacion(titulo, cuerpo) {
  * envia notificación push desde el lado del cliente
  * @returns 
  */
-function notifyMe(titulo,cuerpo) {
+function notifyMe(titulo, cuerpo) {
     if (!window.Notification) {
         console.log('Este navegador no soporta notificaciones');
         return;
     }
     if (Notification.permission === 'granted') {
         // new Notification('Hola Mundo! - granted');
-        enviarNotificacion(titulo,cuerpo);
+        enviarNotificacion(titulo, cuerpo);
     } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
         Notification.requestPermission(function (permission) {
             console.log(permission);
             if (permission === 'granted') {
                 // new Notification('Hola Mundo! - pregunta');
-                enviarNotificacion(titulo,cuerpo);
+                enviarNotificacion(titulo, cuerpo);
             }
         });
     }
@@ -282,28 +157,11 @@ function getPublicKey() {
 }
 
 
-btnDesactivadas.on('click', ()=> {
-    if (!swReg) return console.log('No hay registro de SW');
-    getPublicKey().then(function (key) {
-        swReg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: key
-            })
-            .then(res => res.toJSON())
-            .then(suscripcion => {
-                console.log(suscripcion);
-                fetch('api/subscribe', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(suscripcion)
-                    })
-                    .then(verificaSuscripcion)
-                    .catch(cancelarSuscripcion);
-            });
-    });
-});
+
+
+// btnDesactivadas.on('click', () => {
+
+// });
 
 
 
@@ -316,3 +174,58 @@ function cancelarSuscripcion() {
 btnActivadas.on('click', function () {
     cancelarSuscripcion();
 });
+
+
+
+
+
+messageDisplayed = false;
+$(window).scroll(function (event) {
+    var scrollPercent = Math.round(100 * $(window).scrollTop() / ($(document).height() - $(window).height()));
+    // MOSTRAR MENSAJE SI:
+    // scroll es mayor a 80%, el usuario expresamente no lo ha denegado previamente, 
+    // pregunto al sw, si las notificaciones no están aún activadas
+    if (!messageDisplayed && scrollPercent > 80 && Notification.permission !== 'denied' && notificacionesActivadas === false) {
+        messageDisplayed = true;
+        console.log('se muestra mensaje');
+        showMessage();
+    }
+});
+
+
+let showMessage = () => {
+    Swal.fire({
+        title: 'Estáte actualizado!',
+        html: `Si quieres que te informemos de nuevos <b>productos</b>,
+            acepte las notificaciones y le informaremos. `,
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Vale!',
+        showCancelButton: true,
+        cancelButtonText: '<i class="fa fa-thumbs-down"></i> En otro momento.'
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            if (!swReg) return console.log('No hay registro de SW');
+            getPublicKey().then(function (key) {
+                swReg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: key
+                    })
+                    .then(res => res.toJSON())
+                    .then(suscripcion => {
+                        console.log(suscripcion);
+                        fetch('api/subscribe', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(suscripcion)
+                            })
+                            .then(verificaSuscripcion)
+                            .then(Swal.fire('Notificaciones activadas, gracias.', '', 'success'))
+                            .catch(cancelarSuscripcion);
+                    });
+            });
+        }
+    })
+
+}

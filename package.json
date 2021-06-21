@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node server/server.js",
         "start2": "./node_modules/nodemon/bin/nodemon.js server/server.js",
-        "dev": "./node_modules/nodemon/bin/nodemon.js server/server --ignore 'server/*.json' ",
+        "serve": "./node_modules/nodemon/bin/nodemon.js server/server --ignore 'server/*.json' ",
         "generate-vapid": "./node_modules/web-push/src/cli.js generate-vapid-keys --json > server/vapid.json"
     },
     "author": "",
@@ -15,6 +15,7 @@
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.17.1",
+        "sweetalert2": "^11.0.18",
         "urlsafe-base64": "^1.0.0",
         "web-push": "^3.4.4"
     },

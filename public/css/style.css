@@ -5,19 +5,6 @@
     font-family: 'Quicksand';
   }
   
-  html, body {
-    margin: 0px !important;
-    color: #7f8c8d;
-    font-size: 16px;
-    background-color: #dde1e2; 
-    width: 100%;
-
-
-    overscroll-behavior-y: contain;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-}
 
 
 /* Personalizados */
@@ -29,14 +16,6 @@ button {
   padding: 5px;
   color: white;
   font-size: 14px;
-}
-
-.btn-noti-activadas {
-  background-color: #058d27;
-}
-
-.btn-noti-desactivadas {
-  background-color: red;
 }
 
 
