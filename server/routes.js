@@ -29,7 +29,8 @@ router.post('/push', (req, res) => {
   const post = {
     titulo: req.body.titulo,
     cuerpo: req.body.cuerpo,
-    sexo: req.body.sexo
+    sexo: req.body.sexo,
+    imagen: req.body.imagen,
   };
   push.sendPush( post );
   res.json( post );

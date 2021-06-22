@@ -102,12 +102,13 @@ self.addEventListener('push', e => {
     const data = JSON.parse( e.data.text() );
     // console.log(data);
     const title = data.titulo;
+    const imagen= data.imagen && data.imagen.length>5? data.imagen: 'https://cdn.shopify.com/s/files/1/1002/8034/products/Giau1A_2048x.jpg?v=1599814490';
     const options = {
         body: data.cuerpo,
         // icon: 'img/icons/icon-72x72.png',
         icon: `img/avatars/${ data.sexo }.png`,
         badge: 'img/favicon.ico',
-        image: 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/5/5b/Torre_de_los_Avengers.png/revision/latest?cb=20150626220613&path-prefix=es',
+        image: imagen,
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
         openUrl: '/',
         data: {
@@ -115,16 +116,17 @@ self.addEventListener('push', e => {
             url: '/',
             id: data.sexo
         },
+        // las acciones las lleva: notificationclick
         actions: [
             {
-                action: 'thor-action',
-                title: 'Thor',
-                icon: 'img/avatar/thor.jpg'
+                action: 'a-action',
+                title: 'Acción A',
+                icon: 'img/avatar/a.jpg'
             },
             {
-                action: 'ironman-action',
-                title: 'Ironman',
-                icon: 'img/avatar/ironman.jpg'
+                action: 'b-action',
+                title: 'Acción B',
+                icon: 'img/avatar/b.jpg'
             }
         ]
     };
@@ -142,16 +144,19 @@ self.addEventListener('notificationclose', e => {
 });
 
 
+// acción tras hacer click en un notification push
 self.addEventListener('notificationclick', e => {
     const notificacion = e.notification;
     const accion = e.action;
-    console.log({ notificacion, accion });
-    // console.log(notificacion);
-    // console.log(accion);
+    console.log('notificacion', notificacion);
+    console.log('accion', accion);
+
+    if(accion==='b-action'){
+            console.log('opción B');
+    }
     
     const respuesta = clients.matchAll()
     .then( clientes => {
-
         let cliente = clientes.find( c => {
             return c.visibilityState === 'visible';
         });
@@ -162,11 +167,8 @@ self.addEventListener('notificationclick', e => {
         } else {
             clients.openWindow( notificacion.data.url );
         }
-
         return notificacion.close();
-
     });
-
     e.waitUntil( respuesta );
 
 
