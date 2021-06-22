@@ -29,7 +29,7 @@ router.post('/push', (req, res) => {
   const post = {
     titulo: req.body.titulo,
     cuerpo: req.body.cuerpo,
-    usuario: req.body.usuario
+    sexo: req.body.sexo
   };
   push.sendPush( post );
   res.json( post );

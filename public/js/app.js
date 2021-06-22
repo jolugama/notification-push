@@ -1,3 +1,4 @@
+ let swReg;
 let app = (() => {
     const url = window.location.href;
     let messageDisplayed = false;
@@ -7,7 +8,7 @@ let app = (() => {
         swLocation = '/sw.js';
     }
 
-    let swReg;
+   
     let notificacionesActivadas = false;
 
 
@@ -18,6 +19,7 @@ let app = (() => {
                 swReg = reg; // serviceWorkerRegistration
                 swReg.pushManager.getSubscription().then(_verificaSuscripcion);
             });
+            window.scroll(0,0);
         });
     }
 
