@@ -16,7 +16,7 @@ router.post('/subscribe', (req, res) => {
   res.json('subscribe');
 });
 
-// Almacenar la suscripción
+
 router.get('/key', (req, res) => {
   const key = push.getKey();
   res.send(key);

@@ -8,6 +8,10 @@ Servidor express que sirve la carpeta public en la web.
 npm install
 ```
 
+## Documentación
+
+[https://developer.mozilla.org/es/docs/Web/API/PushManager](https://developer.mozilla.org/es/docs/Web/API/PushManager)
+
 ## Ejecutar  servidor modo desarrollo
 
 ```

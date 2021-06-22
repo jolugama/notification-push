@@ -17,8 +17,6 @@ function actualizaCacheDinamico(dynamicCache, req, res) {
 
 // Cache with network update
 function actualizaCacheStatico(staticCache, req, APP_SHELL_INMUTABLE) {
-
-
     if (APP_SHELL_INMUTABLE.includes(req.url)) {
         // No hace falta actualizar el inmutable
         // console.log('existe en inmutable', req.url );

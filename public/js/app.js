@@ -17,6 +17,7 @@
          window.addEventListener('load', () => {
              navigator.serviceWorker.register(swLocation).then((reg) => {
                  swReg = reg; // serviceWorkerRegistration
+                 // nos subscribimos a push manager
                  swReg.pushManager.getSubscription().then(_verificaSuscripcion);
              });
              window.scroll(0, 0);
@@ -53,17 +54,34 @@
              showCancelButton: true,
              cancelButtonText: '<i class="fa fa-thumbs-down"></i> En otro momento.'
          }).then((result) => {
-             /* Read more about isConfirmed, isDenied below */
+             /**
+              * Si se acepta:
+              * se subscribe al push manager, nos devuelve un objeto:
+             {
+                "endpoint": "https://fcm.googleapis.com/fcm/send/fdjPctCisYs:APA91bG7k7rqCkk7_R62shlOK7sxaNLG_zw_yejXWfxozJuYlfUcGzNZRDJtP7RhbZ-ioKnaRrdl8KaRmtnXGVdzkEQ_ofWALFCKA5pP4M1Kc98yj5jCNXFdtVtYc1giwm3YB7zo19p0",
+                "expirationTime": null,
+                "keys": {
+                    "p256dh": "BP73k7BSE2QYTtgJQJiBhEgmrD0CjzXLCuLKkFDw97jDyc7B24h9ADxCQd-sq82jipyBL3OUeoanTdkalqKPhjs",
+                    "auth": "aFEzGbsT0YRa1fuDrcnyxA"
+                }
+            }
+              *  Dependiendo del navegador, la url del endpoint será diferente
+              * Se llama a un servicio nuestro subscribe,
+              *  que hace guardar la key y el endpoint en una bbdd
+              */
              if (result.isConfirmed) {
-                 if (!swReg) return console.log('No hay registro de SW');
-                 _getPublicKey().then(function (key) {
+                 if (!swReg) {
+                     return console.log('No hay registro de SW');
+                 }
+                 _getPublicKey().then( (key)=> {
                      swReg.pushManager.subscribe({
                              userVisibleOnly: true,
                              applicationServerKey: key
                          })
                          .then(res => res.toJSON())
                          .then(suscripcion => {
-                             console.log(suscripcion);
+                             console.log('suscripcion',suscripcion);
+                             // me subscribo 
                              fetch('api/subscribe', {
                                      method: 'POST',
                                      headers: {
@@ -97,7 +115,7 @@
 
      // PRIVADAS
 
-     // Get Key
+     // retorna la clave pública del notification push
      let _getPublicKey = () => {
          return fetch('api/key')
              .then(res => res.arrayBuffer())
@@ -107,6 +125,7 @@
 
      // cancela la subscripción. 
      let _cancelarSuscripcion = () => {
+         // nos subscribimos a push manager
          swReg.pushManager.getSubscription().then(subs => {
              subs.unsubscribe().then(() => _verificaSuscripcion(false));
          });
@@ -191,7 +210,7 @@
          // new Notification('Hola Mundo! - granted');
          _enviarNotificacion(titulo, cuerpo);
      } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
-         Notification.requestPermission(function (permission) {
+         Notification.requestPermission( (permission)=> {
              console.log(permission);
              if (permission === 'granted') {
                  // new Notification('Hola Mundo! - pregunta');
