@@ -1,7 +1,7 @@
 let app = (() => {
     const url = window.location.href;
     let messageDisplayed = false;
-    let swLocation = '/twittor/sw.js'; //localización en producción. poner la direccion de github
+    let swLocation = '/pushnotification/sw.js'; //localización en producción. poner la direccion de github
     // en modo desarrollo
     if ((url.includes('localhost')) || (url.includes('127.0.0.1'))) {
         swLocation = '/sw.js';
@@ -173,18 +173,6 @@ $(window).scroll((event) => {
 
 
 
-let _enviarNotificacion = (titulo, cuerpo) => {
-    const notificationOpts = {
-        body: cuerpo,
-        icon: 'img/icons/icon-72x72.png'
-    };
-    const n = new Notification(titulo, notificationOpts);
-    n.onclick = () => {
-        console.log('Click');
-    };
-}
-
-
 /**
  * envia una notificación desde el usuario, sin el lado del servidor.
  * @returns 
@@ -207,5 +195,18 @@ let notifyMe = (titulo, cuerpo) => {
         });
     }
 }
+
+
+let _enviarNotificacion = (titulo, cuerpo) => {
+    const notificationOpts = {
+        body: cuerpo,
+        icon: 'img/icons/icon-72x72.png'
+    };
+    const n = new Notification(titulo, notificationOpts);
+    n.onclick = () => {
+        console.log('Click');
+    };
+}
+
 
 // notifyMe("holi","que tal?");

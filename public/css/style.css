@@ -445,3 +445,14 @@ and (-webkit-device-pixel-ratio : 3) {
 .retweet div {
     color: white;
 }
+
+
+
+
+@media (min-height: 600px) {
+  p{
+    line-height: 2.2em;
+    margin-bottom: 3em !important;
+  }
+}
+
