@@ -1,22 +1,18 @@
 * {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    font-family: 'Quicksand';
-  }
-  
-h1{
-  padding-top: 110px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  font-family: 'Quicksand';
 }
 
-
-
+h1 {
+  padding-top: 110px;
+}
 
 
 .div-img {
   width: 60px;
 }
-
 
 #cancel-btn {
   position: absolute;
@@ -24,37 +20,34 @@ h1{
   z-index: 9999;
 }
 
+.first {
+  width: 100%;
+  display: block;
+  position: fixed;
+  z-index: 999;
+  top: 0px;
 
-
-  .first {
-    width: 100%;
-    display: block;
-    position: fixed;
-    z-index: 999;
-    top: 0px;
-
-    margin: auto;
-    background-color: #64b126;
-    text-shadow: #2084c7 1px 1px 0;
-    padding: 1em 0 !important;
-    color: white;
-    text-align: center;
-    /* margin-top: 1em; */
-    font-family: "Lato";
-    font-size: 1.6em;
+  margin: auto;
+  background-color: #64b126;
+  text-shadow: #2084c7 1px 1px 0;
+  padding: 1em 0 !important;
+  color: white;
+  text-align: center;
+  /* margin-top: 1em; */
+  font-family: "Lato";
+  font-size: 1.6em;
 }
 
 
 
-  
+
 
 
 
 
 @media (min-height: 600px) {
-  p{
+  p {
     line-height: 2.2em;
     margin-bottom: 3em !important;
   }
 }
-
