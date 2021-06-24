@@ -1,6 +1,6 @@
 # Ejemplo push notification para las PWA
 
-Servidor express que sirve la carpeta public en la web. 
+Servidor express que sirve la carpeta public en la web y tiene rutas necesarias para envío de push. 
 
 ## instalar packages necesarios
 
@@ -15,7 +15,7 @@ npm install
 ## Ejecutar  servidor modo desarrollo
 
 ```
-npm run dev
+npm run serve
 ```
 
 Si falla:
@@ -35,3 +35,4 @@ desde terminal:
 ```console
 node server/sendPush.js 'Nuevo post de PWA' 'Todo lo que debes saber sobre las PWA' trans  'https://joseluisgm.com/assets/images/jose_luis_garcia_martinez.png'
 ``` 
+
