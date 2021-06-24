@@ -26,3 +26,12 @@ echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo s
 Ejecuta el archivo server.js.
 
 
+## Enviar push notificacion
+se puede hacer desde postman:
+localhost:3000/api/push, POST. Con body x-www-form-urlencoded: titulo, cuerpo, sexo, imagen
+
+
+desde terminal:
+```console
+node server/sendPush.js 'Nuevo post de PWA' 'Todo lo que debes saber sobre las PWA' trans  'https://joseluisgm.com/assets/images/jose_luis_garcia_martinez.png'
+``` 
